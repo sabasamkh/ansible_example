@@ -22,6 +22,7 @@
 ## beta.example.org
 ## 192.168.1.110
 localhost
+10.150.11.134
 
 # If you have multiple hosts following a pattern you can specify
 # them like this:
