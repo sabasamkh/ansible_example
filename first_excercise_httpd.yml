@@ -1,0 +1,51 @@
+---
+ - name: "Install httpd"
+   hosts: server1
+   become: yes
+
+   tasks:
+   - name: Install httpd 
+     ansible.builtin.dnf:
+       name: httpd
+       state: latest
+     register: httpd_service
+
+   - name:
+     lineinfile:
+       path: /etc/httpd/conf/httpd.conf
+       regexp: '^Listen'
+       line: 'Listen 8080'
+     notify: Restart Apache
+
+   handlers:
+   - name: Restart Apache
+     service: 
+       name: httpd
+       state: restarted
+
+   - name: Check httpd service status active or inactive
+     command: systemctl is-active httpd.service
+     register: httpd_service_status
+
+   - name: Start httpd service
+     service:
+       name: httpd.service
+       state: started
+     when: httpd_service_status.stdout == 'inactive'
+          
+
+   - name: Enable httpd service
+     service:
+       name: httpd
+       enabled: yes
+
+   - name: Copy over an web.html file to each web host
+     copy:
+       dest: /var/www/html/web.html
+
+
+ 
+
+
+
+
